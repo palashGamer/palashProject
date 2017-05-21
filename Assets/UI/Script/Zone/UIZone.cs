@@ -11,5 +11,6 @@ namespace com.palash.lineZen.UI{
 		public Button pauseButton;
 		public SettingsManager settingsManager;
 		public GameObject tutorialPrefab;
+		public GameObject Title;
 	}
 }

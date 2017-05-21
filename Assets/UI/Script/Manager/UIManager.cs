@@ -48,6 +48,7 @@ namespace com.palash.lineZen.UI{
 		public void HandleGameLaunchTasks()
 		{
 			ActivateSelf (true);
+			mZone.Title.SetActive (true);
 			mZone.menuManager.HandleGameLaunchTasks ();
 		}
 		 void ActivateSelf(bool activateStatus)
@@ -96,6 +97,7 @@ namespace com.palash.lineZen.UI{
 			mZone.scoreHandler.ResetScore ();
 			mZone.scoreHandler.StartIncreasingScore ();
 			showTutorial ();
+			mZone.Title.SetActive (false);
 		}
 		public void OnGamePause ()
 		{
