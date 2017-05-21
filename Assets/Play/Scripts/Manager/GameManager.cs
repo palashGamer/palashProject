@@ -111,6 +111,10 @@ namespace com.palash.lineZen.gamePlay
 
 			EnableBall (false);
 		}
+		public void refreshBallDifficulty()
+		{
+			mZone.ball.GetComponent<BallMovement> ().CalculateVertHoriSpeed ();
+		}
 		IEnumerator HandleBlastBall(float waitTimer)
 		{
 			GameObject blastBall = Instantiate<GameObject> (mZone.blastGameObject);

@@ -59,6 +59,7 @@ namespace com.palash.lineZen.UI{
 		{
 			mZone.settingsManager.gameObject.SetActive (false);
 			mZone.menuManager.gameObject.SetActive (true);
+			GameManager.instance.refreshBallDifficulty ();
 		}
 		public void settingsButtonClicked()
 		{

@@ -34,7 +34,7 @@ namespace com.palash.lineZen.gamePlay
 			UserInput.instance.RemoveInputLstnr (this);
 		}
 
-		void CalculateVertHoriSpeed()
+		public void CalculateVertHoriSpeed()
 		{
 			float leftMostWorldPos = Camera.main.ViewportToWorldPoint (new Vector3 (0,0,0)).x;
 			float rightMostWorldPos = Camera.main.ViewportToWorldPoint (new Vector3 (1,0,0)).x;
