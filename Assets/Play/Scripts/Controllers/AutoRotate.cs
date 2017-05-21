@@ -2,17 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutoRotate : MonoBehaviour {
+namespace com.palash.lineZen.gamePlay{
 
-	Transform trans;
+	//This script can be used to rotate anything 
+	public class AutoRotate : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		trans = this.GetComponent<Transform> ();	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		transform.Rotate (0,0,1f);
+		Transform trans;
+		Vector3 rotationVector = new Vector3(0,0,1);
+
+		void Start () {
+			trans = this.GetComponent<Transform> ();
+			InvokeRepeating ("myUpdate",0,Time.deltaTime*2);
+		}
+
+		void myUpdate () {
+			transform.Rotate (rotationVector);
+		}
+
+		void OnDestroy()
+		{
+			CancelInvoke ();
+		}
 	}
 }

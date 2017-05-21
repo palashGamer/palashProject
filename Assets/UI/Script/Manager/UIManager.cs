@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using com.palash.lineZen.gamePlay;
+using com.palash.lineZen.util;
 
 namespace com.palash.lineZen.UI{
 
@@ -9,7 +10,21 @@ namespace com.palash.lineZen.UI{
 	public partial class UIManager : MonoBehaviour {
 
 		public static UIManager instance;
+		GameObject tutorial;
 
+		#region myZone
+		UIZone _mZone;
+		UIZone mZone{
+			get{ 
+				if (_mZone == null)
+					_mZone = GetComponent<UIZone> ();
+
+				return _mZone;
+			}
+		}
+		#endregion
+
+		#region Unity's starting callbacks
 		void Awake()
 		{
 			//assigning singleton
@@ -21,22 +36,15 @@ namespace com.palash.lineZen.UI{
 
 			DontDestroyOnLoad (this.gameObject);
 		}
-
-		UIZone _mZone;
-		UIZone mZone{
-			get{ 
-				if (_mZone == null)
-					_mZone = GetComponent<UIZone> ();
-
-				return _mZone;
-			}
-		}
-
 		void Start()
 		{
 			GameManager.instance.AddUseruserGameStatus (this);
+			UserInput.instance.AddUserInputLstnr (this);
 		}
+		#endregion
 
+
+		#region helper methods
 		public void HandleGameLaunchTasks()
 		{
 			ActivateSelf (true);
@@ -46,13 +54,24 @@ namespace com.palash.lineZen.UI{
 		{
 			this.gameObject.SetActive (activateStatus);
 		}
+		void showTutorial()
+		{
+			if (!PlayerPrefs.HasKey (GameConstants.SHOWTUT)) {
+				PlayerPrefs.SetInt (GameConstants.SHOWTUT, 1);
+				tutorial = Instantiate<GameObject> (mZone.tutorialPrefab);
 
+				tutorial.transform.SetParent (this.transform, false);
+
+			}
+		}
+		#endregion
 	}
 	#region UI_Button_Controllers
 	public partial class UIManager{
 
 		public void PauseButtonClicked()
 		{
+			if(GameConstants.gameStatus == GameStatus.GameRunning)
 			GameManager.instance.PauseGame ();
 		}
 		public void settingsBackButtonClicked()
@@ -76,6 +95,7 @@ namespace com.palash.lineZen.UI{
 		{
 			mZone.scoreHandler.ResetScore ();
 			mZone.scoreHandler.StartIncreasingScore ();
+			showTutorial ();
 		}
 		public void OnGamePause ()
 		{
@@ -89,6 +109,18 @@ namespace com.palash.lineZen.UI{
 		public void OnGameOver ()
 		{
 			
+		}
+	}
+	#endregion
+
+	#region Input callback
+	public partial class UIManager : IInput
+	{
+		public void OnMouseMoved (float deltaX)
+		{
+			if (tutorial) {
+				Destroy (tutorial);
+			}
 		}
 	}
 	#endregion

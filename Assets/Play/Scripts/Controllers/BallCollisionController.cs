@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace com.palash.lineZen.gamePlay{
+
+	/// <summary>
+	/// Ball collision controller. Controls ball collision & hence set method for blast-ball 
+	/// </summary>
 	public class BallCollisionController : MonoBehaviour {
 
-		void OnCollisionStay2D(Collision2D coll)
-		{
-			//Debug.Log ("stay "+coll.gameObject.name);
-		}
+		#region Physics Callback
 		void OnCollisionEnter2D(Collision2D coll)
 		{
 			Debug.Log ("Enter: "+coll.gameObject.tag);
@@ -18,11 +19,9 @@ namespace com.palash.lineZen.gamePlay{
 
 			}
 		}
-		void OnCollisionExit2D(Collision2D coll)
-		{
-			Debug.Log ("Exit: "+coll.gameObject.name);
-		}
+		#endregion
 
+		#region helper Methods
 		IEnumerator blastTheBall()
 		{
 			float waitTimer = 1.75f;
@@ -32,5 +31,6 @@ namespace com.palash.lineZen.gamePlay{
 			GameManager.instance.FinishGame ();
 			
 		}
+		#endregion
 	}
 }

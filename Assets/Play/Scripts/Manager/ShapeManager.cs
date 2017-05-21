@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using com.palash.lineZen.UI;
 
 namespace com.palash.lineZen.gamePlay{
 
 	[RequireComponent(typeof(ShapeZone))]
 	public class ShapeManager : MonoBehaviour {
 
+		#region myZone
 		ShapeZone _mZone;
 		ShapeZone mZone{
 			get{ 
@@ -16,26 +18,22 @@ namespace com.palash.lineZen.gamePlay{
 				return _mZone;
 			}
 		}
+		#endregion
+
+		#region Unity's start callback
 		IEnumerator Start()
 		{
-			for (int count = 0; count < mZone.barriers.Length; count++) {
-				if (Random.Range (0, 2) == 1) {
+			int loopIterator = (int)(mZone.barriers.Length * ((GameConstants.difficulty + 0.1f)));
+			for (int count = 0; count < loopIterator; count++) {
 					MakeBarrierOrSOSRandomly (mZone.barriers [count]);
 					mZone.barriers [count].SetActive (true);
 					yield return new WaitForSeconds (Random.Range (0.0f, 0.3f));
-				}
 			}
 			yield return 0;
 		}
-		public Vector3 ReturnTopPosition()
-		{
-			return mZone.topPosition.position;
-		}
-		public void setNextSpawnPos()
-		{
-			GameManager.instance.SetNextSpawnPos (mZone.topPosition.position.y);
-			Debug.Log ("topPosition: "+mZone.topPosition.position);
-		}
+		#endregion
+
+		#region SOS_Barrier handle
 		public void GenerateSOSrandomly(GameObject sosPrefab)
 		{
 			int rand = Random.Range (0,3);
@@ -51,19 +49,6 @@ namespace com.palash.lineZen.gamePlay{
 				}
 			}
 		}
-		IEnumerator MakeInvisible()
-		{
-			
-				
-				if(GameConstants.gameStatus == GameStatus.GameRunning)
-				GameManager.instance.spawn ();
-
-			yield return new WaitForSeconds (7);
-			if (!mZone.dontDestroy) {
-				Destroy (this.gameObject);
-			}
-			yield return 0;
-		}
 		void MakeBarrierOrSOSRandomly (GameObject Obj)
 		{
 			if (Random.Range (0, 2) == 1) {
@@ -75,6 +60,20 @@ namespace com.palash.lineZen.gamePlay{
 				Obj.GetComponent<SpriteRenderer> ().color = ItemsData.instance.barrierColor;
 			}
 		}
+		#endregion
+
+		#region Self-Destroy Logic
+		IEnumerator MakeInvisible()
+		{
+			if(GameConstants.gameStatus == GameStatus.GameRunning)
+			GameManager.instance.spawn ();
+
+			yield return new WaitForSeconds (7);
+			if (!mZone.dontDestroy) {
+				Destroy (this.gameObject);
+			}
+			yield return 0;
+		}
 
 		void OnTriggerEnter2D(Collider2D coll)
 		{
@@ -82,6 +81,18 @@ namespace com.palash.lineZen.gamePlay{
 				StartCoroutine (MakeInvisible());
 			}
 		}
+		#endregion
+
+		#region helper methods
+		public Vector3 ReturnTopPosition()
+		{
+			return mZone.topPosition.position;
+		}
+		public void setNextSpawnPos()
+		{
+			GameManager.instance.SetNextSpawnPos (mZone.topPosition.position.y);
+		}
+		#endregion
 
 	}
 }

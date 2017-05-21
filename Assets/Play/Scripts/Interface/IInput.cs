@@ -1,4 +1,4 @@
-﻿namespace com.palash.lineZen.input
+﻿namespace com.palash.lineZen.util
 {
 	public interface IInput {
 

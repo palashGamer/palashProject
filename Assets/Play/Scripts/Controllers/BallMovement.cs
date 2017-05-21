@@ -1,21 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using com.palash.lineZen.input;
+using com.palash.lineZen.util;
 
 namespace com.palash.lineZen.gamePlay
 {
 	#region Initialization
+
+	/// <summary>
+	/// Ball movement. This class controls balls auto & joystick movement...
+	/// </summary>
 	public partial class BallMovement : MonoBehaviour  {
 
+		#region public parameters
 		public Transform ball, m_Camera;
+		#endregion
 
+		#region private parameters
 		float horizontalSpeed;
 		float ballAutoVertSpeed;
 
 		float ballDiameter;
 		float ballCamDis;
+		#endregion
 
+		#region Unity's start callbacks
 		void Awake()
 		{
 			if (m_Camera == null)
@@ -33,7 +42,9 @@ namespace com.palash.lineZen.gamePlay
 		{
 			UserInput.instance.RemoveInputLstnr (this);
 		}
+		#endregion
 
+		#region speed control
 		public void CalculateVertHoriSpeed()
 		{
 			float leftMostWorldPos = Camera.main.ViewportToWorldPoint (new Vector3 (0,0,0)).x;
@@ -49,6 +60,7 @@ namespace com.palash.lineZen.gamePlay
 
 			Debug.LogError ("speed: "+horizontalSpeed+" : "+rightMostWorldPos+" : "+leftMostWorldPos+" : "+Screen.width+" : "+ballDiameter);
 		}
+		#endregion
 
 	}
 	#endregion

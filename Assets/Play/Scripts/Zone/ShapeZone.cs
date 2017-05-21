@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShapeZone : MonoBehaviour {
+namespace com.palash.lineZen.gamePlay{
+	public class ShapeZone : MonoBehaviour {
 
-	public Transform topPosition, bottomPosition;
-	public bool dontDestroy;
-	public GameObject[] barriers;
+		public Transform topPosition, bottomPosition;
+		public bool dontDestroy;
+		public GameObject[] barriers;
+	}
 }

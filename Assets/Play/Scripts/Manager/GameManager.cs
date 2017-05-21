@@ -9,8 +9,7 @@ namespace com.palash.lineZen.gamePlay
 	[RequireComponent(typeof(GameZone))]
 	public partial class GameManager : MonoBehaviour {
 
-		//public 
-
+		#region myZone
 		GameZone _mZone;
 		GameZone mZone{
 			get{ 
@@ -20,8 +19,22 @@ namespace com.palash.lineZen.gamePlay
 				return _mZone;
 			}
 		}
-		public static GameManager instance;
+		#endregion
 
+		#region GameStatusListener
+		List<IGameStatus> userGameStatus = new List<IGameStatus>();
+		public void AddUseruserGameStatus(IGameStatus input){
+			if (!userGameStatus.Contains (input)) {
+				userGameStatus.Add (input);
+			}
+		}
+		#endregion
+
+		#region public parameter
+		public static GameManager instance;
+		#endregion
+
+		#region Unity's start callbacks
 		void Awake()
 		{
 			//assigning singleton
@@ -37,55 +50,35 @@ namespace com.palash.lineZen.gamePlay
 		void Start()
 		{
 			HandleGameLaunchTasks ();
-			for (int count = 0; count < 2; count++) {
-				spawn ();
-			}
+			createDefaultRoads ();
 		}
-		public void spawn()
-		{
-			if (GameConstants.gameStatus == GameStatus.GamePaused)
-				return;
-			
-			ShapeManager shapeManager = Instantiate<GameObject> (Resources.Load ("Path_"+Random.Range(0,6)) as GameObject).GetComponent<ShapeManager>();
-			mZone.lastSpawnedObj = shapeManager.gameObject;
-			mZone.PathListGenerated.Add (shapeManager.gameObject);
-			shapeManager.transform.SetParent (this.transform,false);
-			shapeManager.transform.position = new Vector3 (shapeManager.transform.position.x, mZone.nextSpawnY, shapeManager.transform.position.z);
-			shapeManager.transform.position += new Vector3 (0,-0.2f,0);
-			shapeManager.GenerateSOSrandomly (mZone.sosPrefab);
-			shapeManager.setNextSpawnPos ();
-		}
+		#endregion
 
-		List<IGameStatus> userGameStatus = new List<IGameStatus>();
-		public void AddUseruserGameStatus(IGameStatus input){
-			if (!userGameStatus.Contains (input)) {
-				userGameStatus.Add (input);
-			}
-		}
-
+		#region GameStatus Handlers
 		public void StartGame()
 		{
 			GameConstants.gameStatus = GameStatus.GameRunning;
 			setActiveBall (true);
 			userGameStatus.ForEach (x => x.OnGameStart ());
-			//InvokeRepeating ("spawn",0,2);
 		}
 		public void FinishGame()
 		{
-			
-
 			mZone.ResetZone ();
 			DestroyOlderPaths ();
 			DestroyOlderSOS ();
 			userGameStatus.ForEach (x => x.OnGameOver ());
-			//CancelInvoke ("spawn");
 
+			createDefaultRoads ();
+		}
+
+		void createDefaultRoads()
+		{
 			mZone.lastSpawnedObj = mZone.defaultSpawnedObj;
 			mZone.lastSpawnedObj.GetComponent<ShapeManager> ().setNextSpawnPos ();
+
 			for (int count = 0; count < 2; count++) {
 				spawn ();
 			}
-
 		}
 		public void ContinueGame()
 		{
@@ -102,19 +95,60 @@ namespace com.palash.lineZen.gamePlay
 			userGameStatus.ForEach (x => x.OnGamePause ());
 
 		}
+		#endregion
+
+		#region path-spawn & blastBall methods
+		/// <summary>
+		/// Spawn a new path
+		/// </summary>
+		public void spawn()
+		{
+			if (GameConstants.gameStatus == GameStatus.GamePaused)
+				return;
+
+			//Instantiate new path
+			ShapeManager shapeManager = Instantiate<GameObject> (Resources.Load ("Path_"+Random.Range(0,6)) as GameObject).GetComponent<ShapeManager>();
+			mZone.lastSpawnedObj = shapeManager.gameObject;
+
+			//set new path's initials
+			shapeManager.transform.SetParent (this.transform,false);
+			shapeManager.transform.position = new Vector3 (shapeManager.transform.position.x, mZone.nextSpawnY, shapeManager.transform.position.z);
+			shapeManager.transform.position += new Vector3 (0,-0.2f,0);
+
+			//new path's intial required tasks
+			shapeManager.GenerateSOSrandomly (mZone.sosPrefab);
+			mZone.PathListGenerated.Add (shapeManager.gameObject);
+			shapeManager.setNextSpawnPos ();
+		}
 		public void SetNextSpawnPos(float yPos)
 		{
 			mZone.nextSpawnY = yPos;
 		}
+
+		/// <summary>
+		/// Enable the blast ball.
+		/// </summary>
+		/// <param name="waitTimer">Wait timer before the blast ball destroyed after instantiation.</param>
 		public void setBlastBall (float waitTimer){
 			StartCoroutine(HandleBlastBall (waitTimer));
 
 			EnableBall (false);
 		}
+
+		/// <summary>
+		/// Refreshes the ball difficulty after it returns from the settings screen
+		/// </summary>
 		public void refreshBallDifficulty()
 		{
 			mZone.ball.GetComponent<BallMovement> ().CalculateVertHoriSpeed ();
 		}
+		public void AddInSOSlist(GameObject objToAdd)
+		{
+			mZone.sosListGenerated.Add (objToAdd);
+		}
+		#endregion
+
+		#region helper method
 		IEnumerator HandleBlastBall(float waitTimer)
 		{
 			GameObject blastBall = Instantiate<GameObject> (mZone.blastGameObject);
@@ -148,13 +182,6 @@ namespace com.palash.lineZen.gamePlay
 			}
 			mZone.sosListGenerated.Clear ();
 		}
-		public void AddInSOSlist(GameObject objToAdd)
-		{
-			mZone.sosListGenerated.Add (objToAdd);
-		}
-	}
-
-	public partial class GameManager {
 		void HandleGameLaunchTasks()
 		{
 			saveBallInitialPosition ();
@@ -166,20 +193,17 @@ namespace com.palash.lineZen.gamePlay
 		{
 			mZone.ball.SetActive (activeStatus);
 			EnableBall (activeStatus);
-			//mZone.camera.SetActive (activeStatus);
 		}
 		void EnableBall(bool activeStatus)
 		{
 			mZone.ball.GetComponent<SpriteRenderer> ().enabled = activeStatus;
 		}
-		void ResetGame()
-		{
-			
-		}
 		void saveBallInitialPosition()
 		{
 			mZone.ballInitialPosition = mZone.ball.transform.position;
-			mZone.cameraInitialPosition = mZone.camera.transform.position;
+			mZone.cameraInitialPosition = mZone.m_camera.transform.position;
 		}
+		#endregion
 	}
+		
 }

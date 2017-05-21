@@ -8,6 +8,7 @@ namespace com.palash.lineZen.UI
 	[RequireComponent(typeof(MenuZone))]
 	public partial class MenuManager : MonoBehaviour {
 
+		#region myZone
 		MenuZone _mZone;
 		MenuZone mZone{
 			get{ 
@@ -17,6 +18,9 @@ namespace com.palash.lineZen.UI
 				return _mZone;
 			}
 		}
+		#endregion
+
+		#region public methods
 		public void HandleGameLaunchTasks()
 		{
 			ActivateSelf (true);
@@ -29,6 +33,7 @@ namespace com.palash.lineZen.UI
 			showScore ();
 			GameManager.instance.AddUseruserGameStatus (this);
 		}
+		#endregion
 
 	}
 

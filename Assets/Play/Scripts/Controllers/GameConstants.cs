@@ -2,20 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GameConstants {
+namespace com.palash.lineZen.gamePlay{
+	public static class GameConstants {
 
-	public const string BESTSCORE = "BESTSCORE";
-	public const string ROAD_TAG = "Road";
-	public const string SOS_TAG = "SOS";
+		#region playerpref const
+		public const string BESTSCORE = "BESTSCORE";
+		public const string SHOWTUT = "SHOWTUT";
+		#endregion
 
-	public static GameStatus gameStatus;
-	public static int Score;
-}
+		#region Tag_Constants
+		public const string ROAD_TAG = "Road";
+		public const string SOS_TAG = "SOS";
+		#endregion
 
-public enum GameStatus
-{
-	GameRunning,
-	GameFinished,
-	GamePaused
+		#region GamePlay_Constants
+		public static GameStatus gameStatus;
+		public static int Score;
+
+		//these are randomized value, means 0-1
+		public static float sensitivity, difficulty;
+
+		#endregion
+	}
+
+	public enum GameStatus
+	{
+		GameRunning,
+		GameFinished,
+		GamePaused
+	}
 }
 
