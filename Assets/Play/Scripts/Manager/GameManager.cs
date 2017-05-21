@@ -107,7 +107,7 @@ namespace com.palash.lineZen.gamePlay
 				return;
 
 			//Instantiate new path
-			ShapeManager shapeManager = Instantiate<GameObject> (Resources.Load ("Path_"+Random.Range(4,5)) as GameObject).GetComponent<ShapeManager>();
+			ShapeManager shapeManager = Instantiate<GameObject> (Resources.Load ("Path_"+Random.Range(0,6)) as GameObject).GetComponent<ShapeManager>();
 			mZone.lastSpawnedObj = shapeManager.gameObject;
 
 			//set new path's initials
